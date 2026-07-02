@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QueryMind | G4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#031A26; --panel:#001F35; --panel2:#0a2c45; --border:#143a55;
+    --txt:#F5F4F3; --muted:#9fb1bf; --accent:#B9915B; --accent2:#d0ab74;
+    --navy:#001F35; --green:#3fb950; --red:#f85149; --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Manrope',-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+  h1{font-family:'Libre Baskerville',Georgia,serif;font-size:28px;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  input[type=text],select{background:var(--panel2);border:1px solid var(--border);color:var(--txt);border-radius:8px;padding:11px 12px;font-size:15px;width:100%}
+  .grow{flex:1;min-width:240px}
+  .field{min-width:130px}
+  button{cursor:pointer;border:none;border-radius:8px;font-size:14px;font-weight:600;padding:11px 18px;transition:.15s}
+  .primary{background:var(--accent);color:var(--navy)}
+  .primary:hover{filter:brightness(1.08)}
+  .primary:disabled{opacity:.5;cursor:not-allowed}
+  .ghost{background:transparent;border:1px solid var(--border);color:var(--txt)}
+  .ghost:hover{background:var(--panel2)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .chip{font-size:12px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;user-select:none}
+  .chip.on{background:var(--accent);color:var(--navy);border-color:var(--accent);font-weight:600}
+  .bar{height:8px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:14px 0 6px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .2s}
+  .status{font-size:13px;color:var(--muted)}
+  .warn{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.35);color:#ffb3ae;padding:10px 12px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+  .stats{display:flex;gap:20px;flex-wrap:wrap;margin:6px 0 0}
+  .stat b{font-size:22px;display:block}
+  .stat span{font-size:12px;color:var(--muted)}
+  .groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .grp{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .grp h3{font-family:'Libre Baskerville',Georgia,serif;margin:0;padding:12px 14px;font-size:15px;background:var(--panel2);display:flex;justify-content:space-between;align-items:center}
+  .grp h3 .n{font-family:'Manrope',sans-serif;font-size:12px;color:var(--muted);font-weight:500}
+  .grp ul{list-style:none;margin:0;padding:6px 0;max-height:340px;overflow:auto}
+  .grp li{padding:6px 14px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.03)}
+  .grp li:hover{background:var(--panel2)}
+  .grp li b{color:var(--accent)}
+  .hidden{display:none}
+  .switch{display:inline-flex;gap:4px;background:var(--panel2);border:1px solid var(--border);border-radius:999px;padding:4px;margin-bottom:12px}
+  .seg{font-size:13px;padding:7px 14px;border-radius:999px;color:var(--muted);cursor:pointer;user-select:none}
+  .seg.on{background:var(--accent);color:var(--navy);font-weight:600}
+  .note{background:rgba(185,145,91,.12);border:1px solid rgba(185,145,91,.4);color:#e8d3b0;padding:10px 12px;border-radius:8px;font-size:12.5px;margin-bottom:14px}
+  .gsc{margin-top:2px}
+  #gscQuery{margin-bottom:12px}
+  .upload{background:var(--panel);border:1px dashed var(--border);border-radius:var(--radius);padding:22px;text-align:center;margin-bottom:14px}
+  .upload p{color:var(--muted);font-size:13px;margin:0 0 12px;line-height:1.5}
+  .tblwrap{max-height:540px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius)}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;background:var(--panel)}
+  .tbl th,.tbl td{padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
+  .tbl th{background:var(--panel2);font-weight:600;color:var(--muted);position:sticky;top:0}
+  .tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .tag.gold{background:rgba(185,145,91,.22);color:#e8d3b0}
+  .tag.red{background:rgba(248,81,73,.16);color:#ffb3ae}
+  .tag.green{background:rgba(63,185,80,.16);color:#9be6a6}
+  .tag.blue{background:rgba(120,160,210,.18);color:#cfe0f2}
+  .footer{color:var(--muted);font-size:12px;margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+  a{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>QueryMind</h1>
+  <p class="sub">As perguntas reais que as pessoas fazem no Google e os prompts que elas levam pra IA, sobre qualquer tema. Roda 100% no seu navegador, com o seu próprio acesso ao Google. Sem cadastro.</p>
+
+  <div class="card">
+    <div class="row">
+      <div class="grow">
+        <label>Palavra-chave / tema</label>
+        <input id="kw" type="text" placeholder="ex: gestão de vendas, liderança, marketing digital" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Idioma / região</label>
+        <select id="hl">
+          <option value="pt-BR" selected>Português (BR)</option>
+          <option value="pt-PT">Português (PT)</option>
+          <option value="en">Inglês</option>
+          <option value="es">Espanhol</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ritmo (ms entre buscas)</label>
+        <select id="delay">
+          <option value="120">Rápido (120)</option>
+          <option value="250" selected>Normal (250)</option>
+          <option value="500">Seguro (500)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label>Modificadores</label>
+      <div class="chips" id="chips">
+        <span class="chip on" data-k="perguntas">Perguntas (quem, o que, como…)</span>
+        <span class="chip on" data-k="preposicoes">Preposições (para, com, sem…)</span>
+        <span class="chip on" data-k="comparacoes">Comparações (vs, ou, e)</span>
+        <span class="chip" data-k="alfabeto">Alfabético (a–z, 0–9)</span>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px">
+      <button class="primary" id="go">Buscar perguntas</button>
+      <button class="ghost hidden" id="stop">Parar</button>
+      <button class="ghost hidden" id="csv">Exportar CSV</button>
+    </div>
+
+    <div class="bar hidden" id="barWrap"><i id="bar"></i></div>
+    <div class="status" id="status"></div>
+    <div class="warn" id="warn">O Google limitou temporariamente as buscas (muitas requisições no seu IP). Espere alguns minutos, use o ritmo <b>Seguro</b> ou reduza os modificadores. Não é erro da ferramenta, é o volume.</div>
+    <div class="stats hidden" id="stats"></div>
+  </div>
+
+  <div class="switch hidden" id="switch">
+    <span class="seg on" data-view="perguntas">Perguntas do Google</span>
+    <span class="seg" data-view="prompts">Prompts de IA</span>
+    <span class="seg" data-view="gsc">Search Console</span>
+  </div>
+  <div class="note hidden" id="note">Prompts derivados das buscas <b>reais</b> do Google e reescritos no formato que as pessoas usam com ChatGPT/Gemini/Claude, agrupados por intenção. Não são coletados dos assistentes (esse dado é privado) — a base é demanda real de busca.</div>
+
+  <div class="groups" id="groups"></div>
+
+  <div class="gsc hidden" id="gscPanel">
+    <div class="upload">
+      <p>Suba o CSV de <b>Consultas</b> do Search Console (Desempenho &rsaquo; Consultas &rsaquo; Exportar). A aba também aceita o CSV do <b>Planejador de Palavras-chave do Google Ads</b> para mostrar o volume de busca. O arquivo é lido no seu navegador e nunca sai do seu computador.</p>
+      <input type="file" id="gscFile" accept=".csv" hidden>
+      <button class="ghost" id="gscBtn">Escolher arquivo CSV</button>
+      <span id="gscInfo" class="status"></span>
+    </div>
+    <input type="text" id="gscQuery" class="hidden" placeholder="Filtrar por termo (ex: funil de vendas)" autocomplete="off">
+    <div id="gscResults"></div>
+  </div>
+
+  <div class="footer">
+    Baseado no autocomplete público do Google. As buscas saem do seu acesso/IP, por isso é grátis e sem proxy, mas volume muito alto pode causar bloqueio temporário. Ferramenta interna G4.
+    <div style="margin-top:10px">Feito por <a href="https://www.linkedin.com/in/giovannammantovani/" target="_blank" rel="noopener">Giovanna Mantovani</a>, Analista de SEO.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const kw=$('kw'), hlSel=$('hl'), delaySel=$('delay'), go=$('go'), stop=$('stop'),
+        csvBtn=$('csv'), bar=$('bar'), barWrap=$('barWrap'), statusEl=$('status'),
+        warn=$('warn'), statsEl=$('stats'), groupsEl=$('groups'), chips=$('chips'),
+        switchEl=$('switch'), noteEl=$('note');
+
+  // ---- modificadores ----
+  const QUESTIONS = ["quem","o que","que","qual","quais","quando","onde","de onde",
+                     "por que","porque","para que","como","quanto","quanto custa","quantos","quantas"];
+  const QUESTIONS_EN = ["who","what","when","where","why","how","which","how much","how many","can","is","are"];
+  const QUESTIONS_ES = ["quién","qué","cuándo","dónde","por qué","cómo","cuál","cuáles","cuánto","cuántos"];
+  const PREPS = ["para","com","sem","de","do","da","em","no","na","por","sobre","antes","depois"];
+  const PREPS_EN = ["for","with","without","to","near","like","versus"];
+  const PREPS_ES = ["para","con","sin","de","en","por","sobre"];
+  const COMPARE = ["vs","versus","ou","e"];
+  const ALPHA = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
+
+  let active=false, aborted=false, results=[], lastKw="", view="perguntas";
+  let gscRows=[], gscHasVolume=false;
+
+  chips.addEventListener('click', e=>{
+    if(e.target.classList.contains('chip')) e.target.classList.toggle('on');
+  });
+  const enabled = k => document.querySelector(`.chip[data-k="${k}"]`).classList.contains('on');
+
+  function pickSets(lang){
+    if(lang.startsWith('en')) return {Q:QUESTIONS_EN,P:PREPS_EN};
+    if(lang.startsWith('es')) return {Q:QUESTIONS_ES,P:PREPS_ES};
+    return {Q:QUESTIONS,P:PREPS};
+  }
+
+  function buildSeeds(keyword, lang){
+    const {Q,P} = pickSets(lang);
+    const seeds=[];
+    if(enabled('perguntas')){
+      Q.forEach(q=>{ seeds.push(q+" "+keyword); seeds.push(keyword+" "+q); });
+    }
+    if(enabled('preposicoes')) P.forEach(p=> seeds.push(keyword+" "+p));
+    if(enabled('comparacoes')) COMPARE.forEach(c=> seeds.push(keyword+" "+c));
+    if(enabled('alfabeto')) ALPHA.forEach(a=> seeds.push(keyword+" "+a));
+    if(seeds.length===0) seeds.push(keyword);
+    return [...new Set(seeds)];
+  }
+
+  // ---- JSONP ----
+  function jsonp(query, lang){
+    return new Promise(resolve=>{
+      const cb = "g4cb_"+Math.random().toString(36).slice(2);
+      const s = document.createElement('script');
+      let done=false;
+      const cleanup=()=>{ try{delete window[cb]}catch(e){window[cb]=undefined} s.remove(); };
+      const to = setTimeout(()=>{ if(!done){done=true;cleanup();resolve({err:true,list:[]})} }, 8000);
+      window[cb] = data=>{
+        if(done) return; done=true; clearTimeout(to); cleanup();
+        const list = (data && data[1]) ? data[1] : [];
+        resolve({err:false,list});
+      };
+      s.onerror=()=>{ if(!done){done=true;clearTimeout(to);cleanup();resolve({err:true,list:[]})} };
+      s.src = "https://suggestqueries.google.com/complete/search?client=chrome&hl="
+              +encodeURIComponent(lang)+"&ie=UTF-8&oe=UTF-8&q="
+              +encodeURIComponent(query)+"&callback="+cb;
+      document.body.appendChild(s);
+    });
+  }
+
+  const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+  // ---- classificação por intenção ----
+  const QWORDS = [
+    {key:"Quem",     re:/\bquem\b|\bwho\b|\bquién\b/i},
+    {key:"O que",    re:/\bo que\b|\bque\b|\bwhat\b|\bqué\b/i},
+    {key:"Como",     re:/\bcomo\b|\bhow\b|\bcómo\b/i},
+    {key:"Por que",  re:/\bpor que\b|\bporque\b|\bpara que\b|\bwhy\b|\bpor qué\b/i},
+    {key:"Quando",   re:/\bquando\b|\bwhen\b|\bcuándo\b/i},
+    {key:"Onde",     re:/\bonde\b|\bwhere\b|\bdónde\b/i},
+    {key:"Qual",     re:/\bqual\b|\bquais\b|\bwhich\b|\bcuál\b/i},
+    {key:"Quanto",   re:/\bquanto\b|\bquantos\b|\bquantas\b|\bhow much\b|\bhow many\b|\bcuánto\b/i},
+  ];
+  const CMP = /\bvs\b|\bversus\b|\bou\b|\bor\b/i;
+
+  function classify(text){
+    for(const q of QWORDS) if(q.re.test(text)) return {cat:"Perguntas", sub:q.key};
+    if(CMP.test(text)) return {cat:"Comparações", sub:"Comparações"};
+    return {cat:"Preposições / relacionadas", sub:"Preposições / relacionadas"};
+  }
+
+  // ---- prompts de IA (híbrido: parte das buscas reais e reescreve como prompt) ----
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+  function promptIntent(t){
+    if(/\bcomo\b|\bhow\b|\bcómo\b|passo a passo/i.test(t)) return "Como fazer (passo a passo)";
+    if(/\bvs\b|\bversus\b|\bou\b|\bor\b|melhor|melhores|best/i.test(t)) return "Comparar / decidir";
+    if(/\bcusto\b|\bcustos\b|\bpre[çc]o\b|\bpre[çc]os\b|\bvalor\b|quanto custa|quanto tempo|quanto ganha|how much|\bprazo\b/i.test(t)) return "Custo / prazo";
+    if(/\berro\b|\bproblema\b|n[ãa]o funciona|resolver|corrigir|falha/i.test(t)) return "Erros / problemas";
+    if(/\bo que\b|\bque\b|\bqual\b|\bquais\b|\bpor que\b|\bporque\b|\bquanto\b|\bquantos\b|\bquantas\b|what|why|which/i.test(t)) return "Aprender / entender";
+    return "Aprofundar / relacionados";
+  }
+  function toPrompt(s,intent,K){
+    const S=s.trim();
+    switch(intent){
+      case "Como fazer (passo a passo)":
+        return "Monte um passo a passo prático para: "+S+". Assuma que sou iniciante, inclua ferramentas, exemplos e erros comuns a evitar.";
+      case "Comparar / decidir":
+        return "Compare em detalhe: "+S+". Traga prós, contras, custos e diga quando escolher cada opção.";
+      case "Custo / prazo":
+        return cap(S)+"? Detalhe valores e prazos médios, o que mais influencia e como reduzir custo/tempo.";
+      case "Erros / problemas":
+        return cap(S)+": explique as causas mais comuns e me dê um checklist para resolver passo a passo.";
+      case "Aprender / entender":
+        return "Explique de forma clara: "+S+". Traga definição, contexto, exemplos práticos e uma analogia simples.";
+      default:
+        return "Aja como especialista em "+K+" e responda de forma completa: "+S+". Inclua exemplos, dados e próximos passos.";
+    }
+  }
+  function buildPrompts(){
+    const seen=new Set(), out=[];
+    results.forEach(r=>{
+      const intent=promptIntent(r);
+      const p=toPrompt(r,intent,lastKw);
+      const key=p.toLowerCase();
+      if(!seen.has(key)){seen.add(key);out.push({prompt:p,intent,origem:r});}
+    });
+    return out;
+  }
+
+  function render(keyword){
+    const isGsc = view==="gsc";
+    $('gscPanel').classList.toggle('hidden', !isGsc);
+    groupsEl.classList.toggle('hidden', isGsc);
+    if(isGsc) return renderGsc();
+    if(view==="prompts") return renderPrompts(keyword);
+    return renderPerguntas(keyword);
+  }
+  function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function parseCsvText(txt){
+    const lines=txt.split(/\r?\n/).filter(l=>l.trim().length);
+    if(!lines.length) return [];
+    const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c=='"'){if(q&&line[i+1]=='"'){cur+='"';i++;}else q=!q;}else if((c==','||c=='\t'||c==';')&&!q){out.push(cur);cur="";}else cur+=c;}out.push(cur);return out;};
+    const header=parseLine(lines[0]).map(h=>h.trim().toLowerCase());
+    const find=(...re)=>{for(let i=0;i<header.length;i++)if(re.some(x=>x.test(header[i])))return i;return -1;};
+    const iq=find(/consulta|query|palavra|keyword|termo/);
+    const ic=find(/clique|click/);
+    const ii=find(/impress/);
+    const ip=find(/posi|position/);
+    const iv=find(/pesquisas mensais|monthly searches|m[eé]dia de pesquisas|volume/);
+    const num=s=>{s=(s||"").replace(/[^0-9,.\-]/g,"").replace(/\.(?=\d{3}(\D|$))/g,"").replace(",",".");const n=parseFloat(s);return isNaN(n)?0:n;};
+    gscHasVolume=iv>=0;
+    const rows=[];
+    for(let i=1;i<lines.length;i++){const c=parseLine(lines[i]);if(!c.length)continue;const q=(iq>=0?c[iq]:c[0]||"").trim();if(!q)continue;rows.push({q,clk:ic>=0?num(c[ic]):0,imp:ii>=0?num(c[ii]):0,pos:ip>=0?num(c[ip]):0,vol:iv>=0?num(c[iv]):null});}
+    return rows;
+  }
+  function gscStatus(r){
+    const brand=/\bg4\b|\bote\b|ecossistema/i.test(r.q);
+    if(brand && r.clk>0) return {t:"Marca",c:"blue"};
+    if(r.pos>0 && r.pos<=10 && r.clk===0 && r.imp>=15) return {t:"Rankeia sem clique",c:"gold"};
+    if(r.pos>0 && r.pos<=10) return {t:"Forte",c:"green"};
+    if(r.imp>=20 && r.pos>40) return {t:"Lacuna de ouro",c:"gold"};
+    if(r.pos>40) return {t:"Enterrado",c:"red"};
+    return {t:"Mediano",c:"blue"};
+  }
+  function renderGsc(){
+    const panel=$('gscResults');
+    if(!gscRows.length){ panel.innerHTML=""; statsEl.classList.add('hidden'); return; }
+    const term=($('gscQuery').value||"").trim().toLowerCase();
+    let rows=[...gscRows];
+    if(term) rows=rows.filter(r=>r.q.toLowerCase().includes(term));
+    rows.sort((a,b)=>b.imp-a.imp);
+    const body=rows.map(r=>{const st=gscStatus(r);return "<tr><td>"+esc(r.q)+"</td>"+(gscHasVolume?"<td class='num'>"+(r.vol!=null?Math.round(r.vol):"")+"</td>":"")+"<td class='num'>"+Math.round(r.imp)+"</td><td class='num'>"+Math.round(r.clk)+"</td><td class='num'>"+(r.pos?r.pos.toFixed(1):"")+"</td><td><span class='tag "+st.c+"'>"+st.t+"</span></td></tr>";}).join("");
+    let gaps=[];
+    if(results.length){const gset=gscRows.map(r=>r.q.toLowerCase());gaps=results.filter(a=>!gset.some(g=>a.toLowerCase().includes(g)||g.includes(a.toLowerCase())));if(term)gaps=gaps.filter(a=>a.toLowerCase().includes(term));}
+    const gapsHtml = results.length? "<div class='grp' style='margin-top:14px'><h3>Perguntas com demanda e SEM presença do G4<span class='n'>"+gaps.length+"</span></h3><ul>"+gaps.slice(0,80).sort().map(g=>"<li>"+esc(g)+"</li>").join("")+"</ul></div>" : "";
+    panel.innerHTML="<div class='tblwrap'><table class='tbl'><thead><tr><th>Query (GSC)</th>"+(gscHasVolume?"<th class='num'>Volume</th>":"")+"<th class='num'>Impr.</th><th class='num'>Cliques</th><th class='num'>Posição</th><th>Status</th></tr></thead><tbody>"+body+"</tbody></table></div>"+gapsHtml;
+    statsEl.classList.remove('hidden');
+    const clk=rows.reduce((s,r)=>s+r.clk,0);
+    statsEl.innerHTML="<div class='stat'><b>"+rows.length+"</b><span>queries"+(term?" (filtro)":" no GSC")+"</span></div><div class='stat'><b>"+Math.round(clk)+"</b><span>cliques</span></div>"+(results.length?"<div class='stat'><b>"+gaps.length+"</b><span>perguntas sem presença</span></div>":"");
+  }
+  function renderPrompts(){
+    const prompts=buildPrompts();
+    const buckets={};
+    prompts.forEach(p=>{(buckets[p.intent]=buckets[p.intent]||[]).push(p.prompt);});
+    const order=["Aprender / entender","Como fazer (passo a passo)","Comparar / decidir","Custo / prazo","Erros / problemas","Aprofundar / relacionados"];
+    const keys=Object.keys(buckets).sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return(ia<0?99:ia)-(ib<0?99:ib);});
+    groupsEl.innerHTML="";
+    keys.forEach(k=>{
+      const items=buckets[k];
+      const div=document.createElement('div');div.className='grp';
+      const lis=items.sort().map(t=>"<li>"+t+"</li>").join("");
+      div.innerHTML="<h3>"+k+"<span class='n'>"+items.length+"</span></h3><ul>"+lis+"</ul>";
+      groupsEl.appendChild(div);
+    });
+    statsEl.classList.remove('hidden');
+    statsEl.innerHTML=
+      "<div class='stat'><b>"+prompts.length+"</b><span>prompts de IA</span></div>"+
+      "<div class='stat'><b>"+keys.length+"</b><span>intenções</span></div>"+
+      "<div class='stat'><b>"+results.length+"</b><span>buscas reais na base</span></div>";
+  }
+  function renderPerguntas(keyword){
+    // agrupar
+    const buckets={};
+    results.forEach(r=>{
+      const c=classify(r);
+      const label = c.cat==="Perguntas" ? c.sub : c.cat;
+      (buckets[label]=buckets[label]||[]).push(r);
+    });
+    const order=["Quem","O que","Como","Por que","Quando","Onde","Qual","Quanto","Comparações","Preposições / relacionadas"];
+    const keys=Object.keys(buckets).sort((a,b)=>{
+      const ia=order.indexOf(a), ib=order.indexOf(b);
+      return (ia<0?99:ia)-(ib<0?99:ib);
+    });
+    groupsEl.innerHTML="";
+    const kwRe = new RegExp("("+keyword.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig");
+    keys.forEach(k=>{
+      const items=buckets[k];
+      const div=document.createElement('div'); div.className='grp';
+      const lis=items.sort().map(t=>"<li>"+t.replace(kwRe,"<b>$1</b>")+"</li>").join("");
+      div.innerHTML="<h3>"+k+"<span class='n'>"+items.length+"</span></h3><ul>"+lis+"</ul>";
+      groupsEl.appendChild(div);
+    });
+    statsEl.classList.remove('hidden');
+    const perguntas = results.filter(r=>classify(r).cat==="Perguntas").length;
+    statsEl.innerHTML =
+      "<div class='stat'><b>"+results.length+"</b><span>sugestões únicas</span></div>"+
+      "<div class='stat'><b>"+perguntas+"</b><span>perguntas</span></div>"+
+      "<div class='stat'><b>"+keys.length+"</b><span>grupos</span></div>";
+  }
+
+  async function run(){
+    const keyword=(kw.value||"").trim().toLowerCase();
+    if(!keyword){ kw.focus(); return; }
+    const lang=hlSel.value, delay=parseInt(delaySel.value,10);
+    active=true; aborted=false; results=[]; lastKw=keyword;
+    warn.style.display="none"; statsEl.classList.add('hidden'); groupsEl.innerHTML="";
+    go.disabled=true; stop.classList.remove('hidden'); csvBtn.classList.add('hidden'); switchEl.classList.add('hidden'); noteEl.classList.add('hidden'); barWrap.classList.remove('hidden');
+
+    const seeds=buildSeeds(keyword,lang);
+    const seen=new Set(); let errCount=0;
+    for(let i=0;i<seeds.length;i++){
+      if(aborted) break;
+      const {err,list}=await jsonp(seeds[i],lang);
+      if(err) errCount++;
+      list.forEach(s=>{ const v=(s||"").trim(); if(v && !seen.has(v.toLowerCase())){ seen.add(v.toLowerCase()); results.push(v);} });
+      const pct=Math.round(((i+1)/seeds.length)*100);
+      bar.style.width=pct+"%";
+      statusEl.textContent="Buscando… "+(i+1)+"/"+seeds.length+" combinações · "+results.length+" sugestões";
+      if(errCount>=4){ warn.style.display="block"; }
+      render(keyword);
+      if(!aborted && i<seeds.length-1) await sleep(delay);
+    }
+    active=false;
+    stop.classList.add('hidden'); go.disabled=false;
+    statusEl.textContent = (aborted?"Interrompido. ":"Pronto. ")+results.length+" sugestões encontradas."+(errCount>0?(" ("+errCount+" buscas falharam)"):"");
+    if(results.length){ csvBtn.classList.remove('hidden'); switchEl.classList.remove('hidden'); noteEl.classList.toggle('hidden', view!=="prompts"); }
+  }
+
+  function exportCsv(){
+    if(!results.length) return;
+    const rows=[["tipo","conteudo","grupo_intencao","origem_busca","palavra_chave"]];
+    results.forEach(r=>{ const c=classify(r); const g=c.cat==="Perguntas"?c.sub:c.cat; rows.push(["pergunta_google",r,g,"",lastKw]); });
+    buildPrompts().forEach(p=>{ rows.push(["prompt_ia",p.prompt,p.intent,p.origem,lastKw]); });
+    const csv=rows.map(row=>row.map(f=>'"'+String(f).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+    const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download="querymind-"+lastKw.replace(/\s+/g,"-")+".csv";
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  go.addEventListener('click',run);
+  switchEl.addEventListener('click',e=>{
+    if(!e.target.classList.contains('seg')) return;
+    view=e.target.dataset.view;
+    [...switchEl.children].forEach(c=>c.classList.toggle('on',c===e.target));
+    noteEl.classList.toggle('hidden', view!=="prompts");
+    render(lastKw||"");
+  });
+  stop.addEventListener('click',()=>{aborted=true;});
+  csvBtn.addEventListener('click',exportCsv);
+  $('gscBtn').addEventListener('click',()=>$('gscFile').click());
+  $('gscFile').addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload=()=>{ gscRows=parseCsvText(String(rd.result));
+      $('gscInfo').textContent = gscRows.length ? (gscRows.length+" queries carregadas"+(gscHasVolume?" (com volume do Ads)":"")) : "Não consegui ler queries desse arquivo. Use o CSV de Consultas do GSC ou do Planejador do Google Ads.";
+      if(gscRows.length) $('gscQuery').classList.remove('hidden');
+      if(view==="gsc") renderGsc();
+    };
+    rd.readAsText(f,'utf-8');
+  });
+  $('gscQuery').addEventListener('input',()=>{ if(view==="gsc") renderGsc(); });
+  kw.addEventListener('keydown',e=>{ if(e.key==="Enter"&&!active) run(); });
+})();
+</script>
+</body>
+</html>
